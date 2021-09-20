@@ -1,0 +1,49 @@
+const express = require("express");
+const multer = require("multer");
+const {
+  getUser,
+  updateUser,
+  updateUserPassword,
+  getUserWishlist,
+  getUserProperties,
+  updateUserWishlist,
+} = require("../controllers/users");
+const verifyToken = require("../verifyToken");
+const router = express.Router();
+
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/images/avatars");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "--" + file.originalname);
+  },
+});
+
+let upload = multer({ storage: fileStorageEngine });
+
+router.get("/wishlist/:id", (req, res) => {
+  return getUserWishlist(req, res);
+});
+
+router.get("/my-properties/:id", (req, res) => {
+  return getUserProperties(req, res);
+});
+
+router.patch("/update-wishlist/:id", (req, res) => {
+  return updateUserWishlist(req, res);
+});
+
+router.get("/:id", verifyToken, (req, res) => {
+  return getUser(req, res);
+});
+
+router.put("/:id", verifyToken, upload.single("avatar"), (req, res) => {
+  return updateUser(req, res);
+});
+
+router.patch("/security/:id", (req, res) => {
+  return updateUserPassword(req, res);
+});
+
+module.exports = router;
