@@ -59,9 +59,7 @@ const propertiesSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  isSponsored: {
-    type: Boolean,
-  },
+
   cityId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "City",
@@ -80,6 +78,18 @@ const propertiesSchema = new mongoose.Schema({
   },
   gallery: {
     type: [String],
+  },
+  standard: {
+    type: Boolean,
+    default: false,
+  },
+  premium: {
+    type: Boolean,
+    default: false,
+  },
+  pro: {
+    type: Boolean,
+    default: false,
   },
 });
 

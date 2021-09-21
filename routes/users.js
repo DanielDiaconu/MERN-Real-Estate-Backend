@@ -7,6 +7,8 @@ const {
   getUserWishlist,
   getUserProperties,
   updateUserWishlist,
+  getUserPromotePropery,
+  updateProperty,
 } = require("../controllers/users");
 const verifyToken = require("../verifyToken");
 const router = express.Router();
@@ -24,6 +26,10 @@ let upload = multer({ storage: fileStorageEngine });
 
 router.get("/wishlist/:id", (req, res) => {
   return getUserWishlist(req, res);
+});
+
+router.get("/promote/:id", (req, res) => {
+  return getUserPromotePropery(req, res);
 });
 
 router.get("/my-properties/:id", (req, res) => {

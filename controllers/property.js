@@ -25,3 +25,24 @@ exports.getSingleProperty = async (req, res, next) => {
     res.json({ message: error });
   }
 };
+
+exports.updateProperty = async (req, res) => {
+  let { id } = req.params;
+
+  try {
+    const property = await Property.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        standard: req.body.standard,
+        pro: req.body.pro,
+        premium: req.body.premium,
+      },
+      { new: true }
+    );
+    res.status(200).json(property);
+  } catch (error) {
+    res.status(400).json({ message: error });
+  }
+};

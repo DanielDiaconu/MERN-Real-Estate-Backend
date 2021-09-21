@@ -114,3 +114,14 @@ exports.updateUserPassword = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.getUserPromotePropery = async (req, res) => {
+  let { id } = req.params;
+
+  try {
+    const property = await Property.findById(id);
+    res.status(200).json(property);
+  } catch (error) {
+    res.status(400).json({ message: error });
+  }
+};
