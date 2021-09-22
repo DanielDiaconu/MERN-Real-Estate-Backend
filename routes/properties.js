@@ -3,6 +3,7 @@ const Property = require("../models/Property");
 const router = require("express").Router();
 const multer = require("multer");
 const ObjectId = require("mongodb").ObjectId;
+const User = require("../models/User");
 
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -48,8 +49,12 @@ router.post(
       thumbnail: req.files.thumbnail[0].filename,
       price: body.price,
     });
+
     try {
       const property = await newProperty.save();
+      await User.findByIdAndUpdate(body.ownerId, {
+        $push: { myProperties: ObjectId(property._id) },
+      });
       res.status(201).json(property);
     } catch (error) {
       res.status(400).json({ message: error.message });

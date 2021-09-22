@@ -41,6 +41,16 @@ const userSchema = new mongoose.Schema({
       ref: "Property",
     },
   ],
+  funds: {
+    type: Number,
+    default: 50,
+  },
+  creditCards: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "CreditCard",
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

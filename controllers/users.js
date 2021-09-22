@@ -6,7 +6,7 @@ const ObjectId = require("mongodb").ObjectId;
 exports.getUser = async (req, res) => {
   let { id } = req.params;
   try {
-    const user = await User.findById(id).select("-password");
+    const user = await User.findById(id).select("-password -creditCards");
     res.status(200).json(user);
   } catch (error) {
     res.status(400).json({ message: error.message });
