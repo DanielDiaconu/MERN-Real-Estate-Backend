@@ -35,7 +35,7 @@ exports.postCreditCard = async (req, res) => {
     await User.findByIdAndUpdate(id, {
       $push: { creditCards: ObjectId(card._id) },
     });
-    res.status(201).json({ message: "Payment method successfully added!" });
+    res.status(201).json(card);
   } catch (error) {
     res.status(400).json({ message: error });
   }
@@ -45,9 +45,11 @@ exports.deleteCreditCard = async (req, res) => {
   let { id } = req.params;
   try {
     await CreditCard.findByIdAndDelete(id);
-    await User.findByIdAndUpdate(id, {
-      $pull: { creditCards: id },
-    });
+    await User.findOneAndUpdate(
+      { creditCards: id },
+      { $pull: { creditCards: id } }
+    );
+
     res.status(200).json({ message: "Payment method successfully removed!" });
   } catch (error) {
     res.status(400).json({ message: error });

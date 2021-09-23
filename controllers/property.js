@@ -1,4 +1,5 @@
 const Property = require("../models/Property");
+const User = require("../models/User");
 
 exports.getSingleProperty = async (req, res, next) => {
   let { id } = req.params;
@@ -28,20 +29,27 @@ exports.getSingleProperty = async (req, res, next) => {
 
 exports.updateProperty = async (req, res) => {
   let { id } = req.params;
-
+  console.log(id, req.body);
   try {
-    const property = await Property.findOneAndUpdate(
+    await Property.findOneAndUpdate(
       {
         _id: id,
       },
       {
-        standard: req.body.standard,
-        pro: req.body.pro,
-        premium: req.body.premium,
-      },
-      { new: true }
+        standard: req.body.data.standard,
+        pro: req.body.data.pro,
+        premium: req.body.data.premium,
+      }
     );
-    res.status(200).json(property);
+
+    await User.findOneAndUpdate(
+      { _id: req.body.userId },
+      {
+        $inc: { funds: -req.body.funds },
+      }
+    );
+
+    res.send(200);
   } catch (error) {
     res.status(400).json({ message: error });
   }

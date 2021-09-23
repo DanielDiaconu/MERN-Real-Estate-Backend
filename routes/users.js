@@ -9,6 +9,8 @@ const {
   updateUserWishlist,
   getUserPromotePropery,
   updateProperty,
+  updateUserFunds,
+  updateUserFundsAfterPromote,
 } = require("../controllers/users");
 const verifyToken = require("../verifyToken");
 const router = express.Router();
@@ -38,6 +40,10 @@ router.get("/my-properties/:id", (req, res) => {
 
 router.patch("/update-wishlist/:id", (req, res) => {
   return updateUserWishlist(req, res);
+});
+
+router.patch("/deposit-funds/:id", (req, res) => {
+  return updateUserFunds(req, res);
 });
 
 router.get("/:id", verifyToken, (req, res) => {

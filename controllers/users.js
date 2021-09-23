@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const Property = require("../models/Property");
 const ObjectId = require("mongodb").ObjectId;
+const CreditCard = require("../models/CreditCard");
 
 exports.getUser = async (req, res) => {
   let { id } = req.params;
@@ -123,5 +124,25 @@ exports.getUserPromotePropery = async (req, res) => {
     res.status(200).json(property);
   } catch (error) {
     res.status(400).json({ message: error });
+  }
+};
+
+exports.updateUserFunds = async (req, res) => {
+  let { id } = req.params;
+
+  try {
+    await User.findOneAndUpdate(
+      id,
+      { $inc: { funds: parseInt(req.body.funds) } },
+      {
+        new: true,
+      }
+    );
+    await CreditCard.findByIdAndUpdate(req.body.cardId, {
+      $inc: { funds: -req.body.funds },
+    });
+    res.status(200).json({ message: "Funds has been successfully added!" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
