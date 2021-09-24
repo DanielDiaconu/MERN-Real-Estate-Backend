@@ -1,4 +1,3 @@
-const { number } = require("@hapi/joi");
 const mongoose = require("mongoose");
 
 const propertiesSchema = new mongoose.Schema({
@@ -70,6 +69,12 @@ const propertiesSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Amenety",
       required: true,
+    },
+  ],
+  questions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Question",
     },
   ],
   date: {

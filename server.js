@@ -13,6 +13,8 @@ const amenetiesRoute = require("./routes/amenenties");
 const catalogRoute = require("./routes/catalog");
 const propertyRoute = require("./routes/property");
 const creditCardsRoute = require("./routes/creditCards");
+const questionsRoute = require("./routes/questions");
+const repliesRoute = require("./routes/replies");
 
 app.use(cors());
 app.use(express.urlencoded());
@@ -28,6 +30,8 @@ app.use("/", amenetiesRoute);
 app.use("/catalog", catalogRoute);
 app.use("/property", propertyRoute);
 app.use("/", creditCardsRoute);
+app.use("/", questionsRoute);
+app.use("/", repliesRoute);
 
 app.listen(PORT, console.log(`We are live and listening on port ${PORT}`));
 mongoose.connect(
