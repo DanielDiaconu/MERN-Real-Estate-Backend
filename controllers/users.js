@@ -79,7 +79,7 @@ exports.updateUser = async (req, res) => {
     if (req.file) {
       req.body.avatar = req.file.filename;
     }
-    const user = await User.findOneAndUpdate(id, req.body, {
+    const user = await User.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
     }).select("-password");
     res.status(200).json(user);
@@ -132,7 +132,7 @@ exports.updateUserFunds = async (req, res) => {
 
   try {
     await User.findOneAndUpdate(
-      id,
+      { _id: id },
       { $inc: { funds: parseInt(req.body.funds) } },
       {
         new: true,

@@ -18,7 +18,7 @@ exports.getSingleProperty = async (req, res, next) => {
       .populate({ path: "cityId", select: ["name"] })
       .populate({
         path: "ownerId",
-        select: ["firstName", "lastName", "email"],
+        select: ["fullName", "phone", "email", "avatar"],
       })
       .populate({ path: "amenities" });
     res.status(200).json(property);

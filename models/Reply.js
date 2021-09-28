@@ -15,12 +15,25 @@ const replySchema = new mongoose.Schema({
     default: Date.now,
   },
   likes: {
-    type: Number,
-    default: 0,
+    userIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    count: {
+      type: Number,
+      default: 0,
+    },
   },
   dislikes: {
-    type: Number,
-    default: 0,
+    userIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    count: { type: Number, default: 0 },
   },
 });
 

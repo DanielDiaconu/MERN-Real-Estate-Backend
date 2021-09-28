@@ -36,5 +36,5 @@ app.use("/", repliesRoute);
 app.listen(PORT, console.log(`We are live and listening on port ${PORT}`));
 mongoose.connect(
   process.env.DB_CONNECTION,
-  console.log("Connect to Database !")
+  console.log("Connected to Database !")
 );

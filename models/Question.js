@@ -18,11 +18,21 @@ const questionSchema = new mongoose.Schema({
     default: Date.now(),
   },
   likes: {
-    userIds: [String],
+    userIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     count: { type: Number, default: 0 },
   },
   dislikes: {
-    userIds: [String],
+    userIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     count: { type: Number, default: 0 },
   },
   replies: [
