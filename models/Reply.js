@@ -6,6 +6,10 @@ const replySchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  questionId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Question",
+  },
   replyBody: {
     type: String,
     required: true,

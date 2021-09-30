@@ -11,6 +11,7 @@ exports.postReply = async (req, res) => {
   const newReply = new Reply({
     replyBody: body.replyBody,
     userId: ObjectId(body.userId),
+    questionId: body.questionId,
   });
   try {
     const reply = await newReply.save();

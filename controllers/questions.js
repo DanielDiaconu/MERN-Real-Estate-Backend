@@ -15,7 +15,8 @@ exports.getQuestions = async (req, res) => {
       .populate({
         path: "replies",
         populate: { path: "userId", select: ["fullName", "avatar"] },
-      });
+      })
+      .sort(req.query.sort);
     res.status(200).json(questions);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -44,6 +45,18 @@ exports.postQuestion = async (req, res) => {
     res.status(200).json(populatedQuestion);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+exports.deleteQuestion = async (req, res) => {
+  let { id } = req.params;
+
+  try {
+    const question = await Question.deleteOne({ _id: id });
+    await Reply.deleteMany({ questionId: id });
+    res.status(200).json({ message: "Question deleted successfully!" });
+  } catch (error) {
+    res.status(400).json({ message: "An error occured , please try again!" });
   }
 };
 
