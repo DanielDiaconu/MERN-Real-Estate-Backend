@@ -3,21 +3,34 @@ const Question = require("../models/Question");
 const Reply = require("../models/Reply");
 const ObjectId = require("mongodb").ObjectId;
 const Property = require("../models/Property");
-const { findById } = require("../models/User");
 
 exports.getQuestions = async (req, res) => {
   let { id } = req.params;
   try {
-    const questions = await Question.find({
+    let query = Question.find({
       propertyId: id,
     })
       .populate({ path: "userId", select: ["fullName", "avatar"] })
       .populate({
         path: "replies",
         populate: { path: "userId", select: ["fullName", "avatar"] },
-      })
-      .sort(req.query.sort);
-    res.status(200).json(questions);
+      });
+
+    if (req.query.sort === "likes.count") {
+      query = query.sort({ "likes.count": "desc" });
+    } else {
+      query = query.sort(req.query.sort);
+    }
+
+    const total = await Question.count({ propertyId: id });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    const questions = await query;
+    res.status(200).json({ results: questions, total });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
