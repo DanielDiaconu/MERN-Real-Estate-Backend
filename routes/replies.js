@@ -4,6 +4,7 @@ const {
   postReply,
   updateReplyLike,
   updateReplyDislike,
+  deleteReply,
 } = require("../controllers/replies");
 
 router.get("/replies", (req, res) => {
@@ -12,6 +13,10 @@ router.get("/replies", (req, res) => {
 
 router.post("/replies", (req, res) => {
   return postReply(req, res);
+});
+
+router.delete("/replies/:id", (req, res) => {
+  return deleteReply(req, res);
 });
 
 router.patch("/reply-like/:id", (req, res) => {

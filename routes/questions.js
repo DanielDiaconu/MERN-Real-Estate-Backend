@@ -5,6 +5,7 @@ const {
   updateQuestionLikes,
   updateQuestionDislikes,
   deleteQuestion,
+  updateQuestionAnsweredState,
 } = require("../controllers/questions");
 
 router.get("/questions/:id", (req, res) => {
@@ -17,6 +18,10 @@ router.delete("/question/:id", (req, res) => {
 
 router.post("/question", (req, res) => {
   return postQuestion(req, res);
+});
+
+router.patch("/question-answered/:id", (req, res) => {
+  return updateQuestionAnsweredState(req, res);
 });
 
 router.patch("/question-like/:id", (req, res) => {

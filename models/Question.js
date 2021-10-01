@@ -41,6 +41,10 @@ const questionSchema = new mongoose.Schema({
       ref: "Reply",
     },
   ],
+  isAnswered: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Question", questionSchema);

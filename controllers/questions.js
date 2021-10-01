@@ -134,3 +134,15 @@ exports.updateQuestionDislikes = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.updateQuestionAnsweredState = async (req, res) => {
+  let { id } = req.params;
+  try {
+    const question = await Question.findByIdAndUpdate(id, {
+      isAnswered: req.body.answeredState,
+    });
+    res.status(200).json(question);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};

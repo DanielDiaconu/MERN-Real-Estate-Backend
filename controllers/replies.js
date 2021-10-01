@@ -89,3 +89,17 @@ exports.updateReplyDislike = async (req, res) => {
     res.status(400).json({ message: error });
   }
 };
+
+exports.deleteReply = async (req, res) => {
+  let { id } = req.params;
+
+  try {
+    await Reply.deleteOne({ _id: id });
+    await Question.findByIdAndUpdate(req.body.questionId, {
+      $pull: { replies: id },
+    });
+    res.status(200).json({ message: "Reply deleted successfully!" });
+  } catch (error) {
+    res.status(200).json({ message: error.message });
+  }
+};

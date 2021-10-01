@@ -22,10 +22,12 @@ router.get("/properties", async (req, res) => {
     }
   }
 
-  let query = Property.find(filterQuery).populate({
-    path: "cityId",
-    select: "name",
-  });
+  let query = Property.find(filterQuery)
+    .populate({
+      path: "cityId",
+      select: "name",
+    })
+    .populate({ path: "ownerId", select: "avatar" });
   const totalCount = await Property.find(filterQuery).count();
 
   query.sort({ premium: -1 });
