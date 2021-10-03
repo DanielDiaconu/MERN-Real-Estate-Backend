@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const Property = require("../models/Property");
 const ObjectId = require("mongodb").ObjectId;
 const CreditCard = require("../models/CreditCard");
+const Review = require("../models/Review");
 
 exports.getUser = async (req, res) => {
   let { id } = req.params;
@@ -11,6 +12,40 @@ exports.getUser = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+exports.getProfileUser = async (req, res) => {
+  let { id } = req.params;
+  try {
+    const user = await User.findById(id).select(
+      "avatar name email phone reviews bio fullName rating"
+    );
+    let query = Review.find({ profileUser: id }).populate({
+      path: "userId",
+      select: ["fullName", "avatar"],
+    });
+
+    if (req.query.sort) {
+      if (req.query.sort[0] === "-") {
+        query = query.sort(req.query.sort);
+      } else {
+        query = query.sort(req.query.sort);
+      }
+    }
+
+    const total = await Review.count({ profileUser: id });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    const reviews = await query;
+
+    res.status(200).json({ user: user, reviews: reviews, total });
+  } catch (error) {
+    res.status(400).json({ message: error });
   }
 };
 

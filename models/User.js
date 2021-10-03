@@ -52,6 +52,21 @@ const userSchema = new mongoose.Schema({
       ref: "CreditCard",
     },
   ],
+  reviews: [
+    {
+      type: Object,
+    },
+  ],
+  rating: {
+    count: {
+      type: Number,
+      default: 0,
+    },
+    average: {
+      type: Number,
+      default: 0,
+    },
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

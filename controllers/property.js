@@ -29,7 +29,6 @@ exports.getSingleProperty = async (req, res, next) => {
 
 exports.updateProperty = async (req, res) => {
   let { id } = req.params;
-  console.log(id, req.body);
   try {
     await Property.findOneAndUpdate(
       {

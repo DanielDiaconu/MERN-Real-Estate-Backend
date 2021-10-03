@@ -11,6 +11,7 @@ const {
   updateProperty,
   updateUserFunds,
   updateUserFundsAfterPromote,
+  getProfileUser,
 } = require("../controllers/users");
 const verifyToken = require("../verifyToken");
 const router = express.Router();
@@ -44,6 +45,10 @@ router.patch("/update-wishlist/:id", (req, res) => {
 
 router.patch("/deposit-funds/:id", (req, res) => {
   return updateUserFunds(req, res);
+});
+
+router.get("/profile-user/:id", (req, res) => {
+  return getProfileUser(req, res);
 });
 
 router.get("/:id", verifyToken, (req, res) => {
