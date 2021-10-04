@@ -27,7 +27,7 @@ router.get("/properties", async (req, res) => {
       path: "cityId",
       select: "name",
     })
-    .populate({ path: "ownerId", select: "avatar" });
+    .populate({ path: "ownerId", select: "avatar fullName" });
   const totalCount = await Property.find(filterQuery).count();
 
   query.sort({ premium: -1 });

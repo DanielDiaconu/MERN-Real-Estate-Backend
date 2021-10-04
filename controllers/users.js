@@ -94,7 +94,7 @@ exports.getUserProperties = async (req, res) => {
   let { id } = req.params;
   try {
     const user = await User.findById(id);
-    const properties = await Property.find({
+    let query = Property.find({
       _id: {
         $in: user.myProperties,
       },
@@ -102,7 +102,21 @@ exports.getUserProperties = async (req, res) => {
       .populate({ path: "cityId", select: "name" })
       .select("-gallery -amenities ");
 
-    res.status(200).json(properties);
+    const total = await Property.count({
+      _id: {
+        $in: user.myProperties,
+      },
+    });
+    if (req.query.page) {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 3;
+      const skip = (page - 1) * limit;
+      query = query.skip(skip).limit(limit);
+    }
+
+    const properties = await query;
+
+    res.status(200).json({ properties: properties, total: total });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

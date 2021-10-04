@@ -51,21 +51,25 @@ exports.deleteReview = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.body.profileUser, {
       $inc: { "rating.count": -review.rating },
     });
+
     let updatedUserRating;
-    if (total > 1) {
-      updatedUserRating = User.findByIdAndUpdate(req.body.profileUser, {
-        "rating.average": (user.rating.count - review.rating) / total,
-      });
-    }
-    if (total === 1) {
-      updatedUserRating = User.findByIdAndUpdate(req.body.profileUser, {
-        "rating.average": review.rating,
-      });
-    }
+
     if (total === 0) {
-      updatedUserRating = User.findByIdAndUpdate(req.body.profileUser, {
-        "rating.average": 0,
-      });
+      updatedUserRating = User.findByIdAndUpdate(
+        req.body.profileUser,
+        {
+          "rating.average": 0,
+        },
+        { new: true }
+      );
+    } else {
+      updatedUserRating = User.findByIdAndUpdate(
+        req.body.profileUser,
+        {
+          "rating.average": (user.rating.count - review.rating) / total,
+        },
+        { new: true }
+      );
     }
 
     const userRating = await updatedUserRating;
