@@ -23,7 +23,7 @@ router.get("/properties", (req, res) => {
 router.post(
   "/properties",
   upload.fields([
-    { name: "gallery", maxCount: 8 },
+    { name: "gallery", maxCount: 6 },
     { name: "thumbnail", maxCount: 1 },
   ]),
   async (req, res) => {

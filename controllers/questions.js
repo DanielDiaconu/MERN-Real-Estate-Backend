@@ -18,6 +18,8 @@ exports.getQuestions = async (req, res) => {
 
     if (req.query.sort === "likes.count") {
       query = query.sort({ "likes.count": "desc" });
+    } else if (req.query.sort === "isAnswered") {
+      query = query.sort({ isAnswered: "desc" });
     } else {
       query = query.sort(req.query.sort);
     }
