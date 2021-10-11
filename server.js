@@ -5,6 +5,7 @@ const http = require("http");
 const app = express();
 const PORT = 8080;
 const cors = require("cors");
+app.use(cors());
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
@@ -24,8 +25,8 @@ const creditCardsRoute = require("./routes/creditCards");
 const questionsRoute = require("./routes/questions");
 const repliesRoute = require("./routes/replies");
 const reviewsRoute = require("./routes/reviews");
+const Notification = require("./models/Notification");
 
-app.use(cors());
 app.use(express.urlencoded());
 app.use(express.json());
 app.use(express.static("public"));
@@ -42,17 +43,35 @@ app.use("/", creditCardsRoute);
 app.use("/", questionsRoute);
 app.use("/", repliesRoute);
 app.use("/reviews", reviewsRoute);
+const users = new Map();
 
 io.on("connection", (socket) => {
-  console.log(`user connected: ${socket.id}`);
+  socket.join(socket.id);
+  socket.on("join-server", (userId) => {
+    users.set(userId, socket.id);
+  });
 
-  socket.on("join-room", (data) => {
-    socket.join(data);
-    console.log(`user with id: ${socket.id} joined room ${data}`);
+  socket.on("question-post", async (data) => {
+    let foundSocketId = users.get(data.ownerId);
+
+    if (foundSocketId) {
+      socket
+        .to(foundSocketId)
+        // .in(foundSocketId)
+        .emit(
+          "receive-question",
+          `${data.username} has posted a question on your property!`
+        );
+      const newNotification = new Notification({
+        body: `${data.username} has posted a question on your property!`,
+        userId: data.ownerId,
+      });
+      await newNotification.save();
+    }
   });
 
   socket.on("disconnect", () => [
-    console.log(`User discoonected ${socket.id}`),
+    // console.log(`User discoonected ${socket.id}`),
   ]);
 });
 
