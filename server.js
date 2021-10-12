@@ -25,6 +25,7 @@ const creditCardsRoute = require("./routes/creditCards");
 const questionsRoute = require("./routes/questions");
 const repliesRoute = require("./routes/replies");
 const reviewsRoute = require("./routes/reviews");
+const notificationsRoute = require("./routes/notifications");
 const Notification = require("./models/Notification");
 
 app.use(express.urlencoded());
@@ -43,6 +44,7 @@ app.use("/", creditCardsRoute);
 app.use("/", questionsRoute);
 app.use("/", repliesRoute);
 app.use("/reviews", reviewsRoute);
+app.use("/notifications", notificationsRoute);
 const users = new Map();
 
 io.on("connection", (socket) => {
@@ -65,6 +67,68 @@ io.on("connection", (socket) => {
       const newNotification = new Notification({
         body: `${data.username} has posted a question on your property!`,
         userId: data.ownerId,
+        notificationType: "fa-question",
+      });
+      await newNotification.save();
+    }
+  });
+
+  socket.on("question-like", async (data) => {
+    let foundSocketId = users.get(data.ownerId);
+    console.log(data);
+    if (foundSocketId) {
+      {
+        socket
+          .to(foundSocketId)
+          .emit(
+            "receive-question-like",
+            `${data.username} has liked one of your questions!`
+          );
+      }
+      const newNotification = new Notification({
+        body: `${data.username} has liked one of your questions!`,
+        userId: data.ownerId,
+        notificationType: "fa-thumbs-up",
+      });
+      await newNotification.save();
+    }
+  });
+
+  socket.on("question-dislike", async (data) => {
+    let foundSocketId = users.get(data.ownerId);
+    if (foundSocketId) {
+      {
+        socket
+          .to(foundSocketId)
+          .emit(
+            "receive-question-dislike",
+            `${data.username} has disliked of your questions!`
+          );
+      }
+      const newNotification = new Notification({
+        body: `${data.username} has disliked one of your questions!`,
+        userId: data.ownerId,
+        notificationType: "fa-thumbs-down",
+      });
+      await newNotification.save();
+    }
+  });
+
+  socket.on("review-post", async (data) => {
+    let foundSocketId = users.get(data.ownerId);
+    if (foundSocketId) {
+      {
+        socket
+          .to(foundSocketId)
+          .emit(
+            "receive-review",
+            `${data.username} has left a review on your profile!`
+          );
+      }
+      const newNotification = new Notification({
+        body: `${data.username} has left a review on your profile!`,
+        userId: data.ownerId,
+        notificationType: "fa-star",
       });
       await newNotification.save();
     }

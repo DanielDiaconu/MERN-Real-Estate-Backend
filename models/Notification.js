@@ -12,6 +12,13 @@ const notificationsSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  readStatus: {
+    type: Boolean,
+    default: false,
+  },
+  notificationType: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Notification", notificationsSchema);
