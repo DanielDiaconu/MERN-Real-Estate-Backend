@@ -134,6 +134,26 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("question-answered", async (data) => {
+    let foundSocketId = users.get(data.ownerId);
+    if (foundSocketId) {
+      {
+        socket
+          .to(foundSocketId)
+          .emit(
+            "receive-question-answered",
+            `A question you have replied to has been marked as answered by ${data.username}`
+          );
+      }
+      const newNotification = new Notification({
+        body: `A question you have replied to has been marked as answered by ${data.username}`,
+        userId: data.ownerId,
+        notificationType: "fa-check",
+      });
+      await newNotification.save();
+    }
+  });
+
   socket.on("disconnect", () => [
     // console.log(`User discoonected ${socket.id}`),
   ]);
