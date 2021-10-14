@@ -57,6 +57,13 @@ io.on("connection", (socket) => {
     let foundSocketId = users.get(data.ownerId);
 
     if (foundSocketId) {
+      const newNotification = new Notification({
+        body: `${data.username} has posted a question on your property!`,
+        userId: data.ownerId,
+        notificationType: "question",
+        targetId: data.targetId,
+      });
+      await newNotification.save();
       socket
         .to(foundSocketId)
         // .in(foundSocketId)
@@ -64,19 +71,19 @@ io.on("connection", (socket) => {
           "receive-question",
           `${data.username} has posted a question on your property!`
         );
-      const newNotification = new Notification({
-        body: `${data.username} has posted a question on your property!`,
-        userId: data.ownerId,
-        notificationType: "fa-question",
-      });
-      await newNotification.save();
     }
   });
 
   socket.on("question-like", async (data) => {
     let foundSocketId = users.get(data.ownerId);
-    console.log(data);
     if (foundSocketId) {
+      const newNotification = new Notification({
+        body: `${data.username} has liked one of your questions!`,
+        userId: data.ownerId,
+        notificationType: "thumbs-up",
+        targetId: data.targetId,
+      });
+      await newNotification.save();
       {
         socket
           .to(foundSocketId)
@@ -85,18 +92,19 @@ io.on("connection", (socket) => {
             `${data.username} has liked one of your questions!`
           );
       }
-      const newNotification = new Notification({
-        body: `${data.username} has liked one of your questions!`,
-        userId: data.ownerId,
-        notificationType: "fa-thumbs-up",
-      });
-      await newNotification.save();
     }
   });
 
   socket.on("question-dislike", async (data) => {
     let foundSocketId = users.get(data.ownerId);
     if (foundSocketId) {
+      const newNotification = new Notification({
+        body: `${data.username} has disliked one of your questions!`,
+        userId: data.ownerId,
+        notificationType: "thumbs-down",
+        targetId: data.targetId,
+      });
+      await newNotification.save();
       {
         socket
           .to(foundSocketId)
@@ -105,18 +113,62 @@ io.on("connection", (socket) => {
             `${data.username} has disliked of your questions!`
           );
       }
+    }
+  });
+
+  socket.on("reply-like", async (data) => {
+    let foundSocketId = users.get(data.ownerId);
+    if (foundSocketId) {
       const newNotification = new Notification({
-        body: `${data.username} has disliked one of your questions!`,
+        body: `${data.username} has liked your reply to the question!`,
         userId: data.ownerId,
-        notificationType: "fa-thumbs-down",
+        notificationType: "thumbs-up",
+        targetId: data.targetId,
       });
       await newNotification.save();
+      {
+        socket
+          .to(foundSocketId)
+          .emit(
+            "receive-reply-like",
+            `${data.username} has liked your reply to the question!`
+          );
+      }
+    }
+  });
+
+  socket.on("reply-dislike", async (data) => {
+    console.log(data);
+    let foundSocketId = users.get(data.ownerId);
+    if (foundSocketId) {
+      const newNotification = new Notification({
+        body: `${data.username} has disliked your reply to the question!`,
+        userId: data.ownerId,
+        notificationType: "thumbs-down",
+        targetId: data.targetId,
+      });
+      await newNotification.save();
+      {
+        socket
+          .to(foundSocketId)
+          .emit(
+            "receive-reply-dislike",
+            `${data.username} has disliked your reply to the question!`
+          );
+      }
     }
   });
 
   socket.on("review-post", async (data) => {
     let foundSocketId = users.get(data.ownerId);
     if (foundSocketId) {
+      const newNotification = new Notification({
+        body: `${data.username} has left a review on your profile!`,
+        userId: data.ownerId,
+        notificationType: "star",
+        targetId: data.targetId,
+      });
+      await newNotification.save();
       {
         socket
           .to(foundSocketId)
@@ -125,18 +177,19 @@ io.on("connection", (socket) => {
             `${data.username} has left a review on your profile!`
           );
       }
-      const newNotification = new Notification({
-        body: `${data.username} has left a review on your profile!`,
-        userId: data.ownerId,
-        notificationType: "fa-star",
-      });
-      await newNotification.save();
     }
   });
 
   socket.on("question-answered", async (data) => {
     let foundSocketId = users.get(data.ownerId);
     if (foundSocketId) {
+      const newNotification = new Notification({
+        body: `A question you have replied to has been marked as answered by ${data.username}`,
+        userId: data.ownerId,
+        notificationType: "check",
+        targetId: data.targetId,
+      });
+      await newNotification.save();
       {
         socket
           .to(foundSocketId)
@@ -145,12 +198,6 @@ io.on("connection", (socket) => {
             `A question you have replied to has been marked as answered by ${data.username}`
           );
       }
-      const newNotification = new Notification({
-        body: `A question you have replied to has been marked as answered by ${data.username}`,
-        userId: data.ownerId,
-        notificationType: "fa-check",
-      });
-      await newNotification.save();
     }
   });
 

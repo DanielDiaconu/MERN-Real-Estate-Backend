@@ -19,6 +19,9 @@ const notificationsSchema = new mongoose.Schema({
   notificationType: {
     type: String,
   },
+  targetId: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Notification", notificationsSchema);
