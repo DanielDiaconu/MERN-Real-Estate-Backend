@@ -61,7 +61,10 @@ io.on("connection", (socket) => {
         body: `${data.username} has posted a question on your property!`,
         userId: data.ownerId,
         notificationType: "question",
-        targetId: data.targetId,
+        target: {
+          parentEntity: data.propertyId,
+          entity: data.questionId,
+        },
       });
       await newNotification.save();
       socket
@@ -81,7 +84,10 @@ io.on("connection", (socket) => {
         body: `${data.username} has liked one of your questions!`,
         userId: data.ownerId,
         notificationType: "thumbs-up",
-        targetId: data.targetId,
+        target: {
+          parentEntity: data.propertyId,
+          entity: data.questionId,
+        },
       });
       await newNotification.save();
       {
@@ -102,7 +108,10 @@ io.on("connection", (socket) => {
         body: `${data.username} has disliked one of your questions!`,
         userId: data.ownerId,
         notificationType: "thumbs-down",
-        targetId: data.targetId,
+        target: {
+          parentEntity: data.propertyId,
+          entity: data.questionId,
+        },
       });
       await newNotification.save();
       {
@@ -123,7 +132,10 @@ io.on("connection", (socket) => {
         body: `${data.username} has liked your reply to the question!`,
         userId: data.ownerId,
         notificationType: "thumbs-up",
-        targetId: data.targetId,
+        target: {
+          parentEntity: data.propertyId,
+          entity: data.questionId,
+        },
       });
       await newNotification.save();
       {
@@ -145,7 +157,10 @@ io.on("connection", (socket) => {
         body: `${data.username} has disliked your reply to the question!`,
         userId: data.ownerId,
         notificationType: "thumbs-down",
-        targetId: data.targetId,
+        target: {
+          parentEntity: data.propertyId,
+          entity: data.questionId,
+        },
       });
       await newNotification.save();
       {

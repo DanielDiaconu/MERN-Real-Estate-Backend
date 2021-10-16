@@ -19,8 +19,13 @@ const notificationsSchema = new mongoose.Schema({
   notificationType: {
     type: String,
   },
-  targetId: {
-    type: String,
+  target: {
+    parentEntity: {
+      type: String,
+    },
+    entity: {
+      type: String,
+    },
   },
 });
 

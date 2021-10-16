@@ -9,7 +9,9 @@ exports.getQuestions = async (req, res) => {
   try {
     let query = Question.find({
       propertyId: id,
-    })
+    });
+
+    query = query
       .populate({ path: "userId", select: ["fullName", "avatar"] })
       .populate({
         path: "replies",
@@ -24,14 +26,25 @@ exports.getQuestions = async (req, res) => {
       query = query.sort(req.query.sort);
     }
 
-    const total = await Question.count({ propertyId: id });
+    const total = await Question.countDocuments({ propertyId: id });
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
 
-    query = query.skip(skip).limit(limit);
+    // query = query.skip(skip).limit(limit);
 
-    const questions = await query;
+    let questions = await query;
+    if (req.query.highlight) {
+      const foundQuestion = questions.find((item) => {
+        return item._id.toString() === req.query.highlight;
+      });
+
+      questions = questions.filter(
+        (item) => item._id.toString() !== req.query.highlight
+      );
+      questions.unshift(foundQuestion);
+    }
+
     res.status(200).json({ results: questions, total });
   } catch (error) {
     res.status(400).json({ message: error.message });
