@@ -181,7 +181,10 @@ io.on("connection", (socket) => {
         body: `${data.username} has left a review on your profile!`,
         userId: data.ownerId,
         notificationType: "star",
-        targetId: data.targetId,
+        target: {
+          parentEntity: data.ownerId,
+          entity: data.reviewId,
+        },
       });
       await newNotification.save();
       {

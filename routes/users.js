@@ -51,7 +51,7 @@ router.get("/profile-user/:id", (req, res) => {
   return getProfileUser(req, res);
 });
 
-router.get("/:id", verifyToken, (req, res) => {
+router.get("/:id", (req, res) => {
   return getUser(req, res);
 });
 

@@ -6,10 +6,15 @@ const {
   updateQuestionDislikes,
   deleteQuestion,
   updateQuestionAnsweredState,
+  getHighlightedQuestion,
 } = require("../controllers/questions");
 
 router.get("/questions/:id", (req, res) => {
   return getQuestions(req, res);
+});
+
+router.get("/highlighted-question/:id", (req, res) => {
+  return getHighlightedQuestion(req, res);
 });
 
 router.delete("/question/:id", (req, res) => {
