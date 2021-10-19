@@ -79,3 +79,18 @@ exports.deleteReview = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.getHighlightedReview = async (req, res) => {
+  let { id } = req.params;
+
+  try {
+    const review = await Review.find({ _id: id }).populate({
+      path: "userId",
+      select: ["fullName", "avatar"],
+    });
+
+    res.status(200).json(review);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};

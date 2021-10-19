@@ -17,11 +17,16 @@ exports.getUser = async (req, res) => {
 
 exports.getProfileUser = async (req, res) => {
   let { id } = req.params;
+  let filters = { profileUser: id };
+  if (req.query.highlight) {
+    filters._id = { $ne: req.query.highlight };
+  }
+
   try {
     const user = await User.findById(id).select(
       "avatar name email phone reviews bio fullName rating"
     );
-    let query = Review.find({ profileUser: id }).populate({
+    let query = Review.find(filters).populate({
       path: "userId",
       select: ["fullName", "avatar"],
     });
@@ -36,7 +41,7 @@ exports.getProfileUser = async (req, res) => {
 
     const total = await Review.count({ profileUser: id });
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 4;
+    const limit = req.query.highlight && page === 1 ? 3 : 4;
     const skip = (page - 1) * limit;
 
     query = query.skip(skip).limit(limit);

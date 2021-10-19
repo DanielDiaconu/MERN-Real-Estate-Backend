@@ -49,8 +49,14 @@ const users = new Map();
 
 io.on("connection", (socket) => {
   socket.join(socket.id);
+  socket.join("live-chat");
   socket.on("join-server", (userId) => {
     users.set(userId, socket.id);
+    io.in("live-chat").emit("live-chat-count", users.size);
+  });
+
+  socket.on("message-send", (data) => {
+    io.in("live-chat").emit("receive-chat-message", data);
   });
 
   socket.on("question-post", async (data) => {
@@ -219,9 +225,16 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => [
-    // console.log(`User discoonected ${socket.id}`),
-  ]);
+  socket.on("disconnect", (reason) => {
+    for (const [key, value] of users.entries()) {
+      if (value === socket.id) {
+        users.delete(key);
+        socket.leave("join-room");
+        socket.leave(socket.id);
+        io.in("live-chat").emit("live-chat-count", users.size);
+      }
+    }
+  });
 });
 
 server.listen(PORT, console.log(`We are live and listening on port ${PORT}`));
