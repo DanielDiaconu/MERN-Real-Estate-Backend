@@ -27,6 +27,7 @@ const repliesRoute = require("./routes/replies");
 const reviewsRoute = require("./routes/reviews");
 const notificationsRoute = require("./routes/notifications");
 const Notification = require("./models/Notification");
+const User = require("./models/User");
 
 app.use(express.urlencoded());
 app.use(express.json());
@@ -50,9 +51,14 @@ const users = new Map();
 io.on("connection", (socket) => {
   socket.join(socket.id);
   socket.join("live-chat");
-  socket.on("join-server", (userId) => {
+  socket.on("join-server", async (userId) => {
+    const user = await User.findById(userId).select("fullName");
     users.set(userId, socket.id);
     io.in("live-chat").emit("live-chat-count", users.size);
+    io.in("live-chat").emit("receive-chat-message", {
+      isInformationalBanner: true,
+      body: `${user.fullName} has joined the chat!`,
+    });
   });
 
   socket.on("message-send", (data) => {
@@ -156,7 +162,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("reply-dislike", async (data) => {
-    console.log(data);
     let foundSocketId = users.get(data.ownerId);
     if (foundSocketId) {
       const newNotification = new Notification({
@@ -225,12 +230,17 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", (reason) => {
+  socket.on("disconnect", async (reason) => {
     for (const [key, value] of users.entries()) {
       if (value === socket.id) {
+        const user = await User.findById(key).select("fullName");
         users.delete(key);
         socket.leave("join-room");
         socket.leave(socket.id);
+        io.in("live-chat").emit("receive-chat-message", {
+          body: `${user.fullName} has left the chat!`,
+          isInformationalBanner: true,
+        });
         io.in("live-chat").emit("live-chat-count", users.size);
       }
     }
