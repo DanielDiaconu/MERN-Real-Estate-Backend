@@ -65,6 +65,10 @@ io.on("connection", (socket) => {
     io.in("live-chat").emit("receive-chat-message", data);
   });
 
+  socket.on("chat-message-reaction", (data) => {
+    io.in("live-chat").emit("receive-chat-reaction", data);
+  });
+
   socket.on("question-post", async (data) => {
     let foundSocketId = users.get(data.ownerId);
 
