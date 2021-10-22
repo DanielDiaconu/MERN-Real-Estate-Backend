@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
     io.in("live-chat").emit("live-chat-count", users.size);
     io.in("live-chat").emit("receive-chat-message", {
       isInformationalBanner: true,
-      body: `${user.fullName} has joined the chat!`,
+      body: `${user.fullName} has joined the global chat!`,
     });
   });
 
@@ -67,6 +67,18 @@ io.on("connection", (socket) => {
 
   socket.on("chat-message-reaction", (data) => {
     io.in("live-chat").emit("receive-chat-reaction", data);
+  });
+
+  socket.on("react-message-count", (data) => {
+    io.in("live-chat").emit("receive-react-count", data);
+  });
+
+  socket.on("chat-currently-typing", (data) => {
+    if (data.typing) {
+      io.in("live-chat").emit("receive-chat-typing", data);
+    } else {
+      io.in("live-chat").emit("receive-chat-typing", data);
+    }
   });
 
   socket.on("question-post", async (data) => {
@@ -242,7 +254,7 @@ io.on("connection", (socket) => {
         socket.leave("join-room");
         socket.leave(socket.id);
         io.in("live-chat").emit("receive-chat-message", {
-          body: `${user.fullName} has left the chat!`,
+          body: `${user.fullName} has left the global chat!`,
           isInformationalBanner: true,
         });
         io.in("live-chat").emit("live-chat-count", users.size);
