@@ -55,7 +55,7 @@ router.get("/:id", (req, res) => {
   return getUser(req, res);
 });
 
-router.put("/:id", verifyToken, upload.single("avatar"), (req, res) => {
+router.put("/:id", upload.single("avatar"), (req, res) => {
   return updateUser(req, res);
 });
 

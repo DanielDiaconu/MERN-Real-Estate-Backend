@@ -267,6 +267,6 @@ server.listen(
   console.log(`We are live and listening on port ${8080}`)
 );
 mongoose.connect(
-  process.env.DB_CONNECTION,
+  "mongodb+srv://danielMERN:mernstack@mern.vaa2p.mongodb.net/MERN?retryWrites=true&w=majority",
   console.log("Connected to Database !")
 );
