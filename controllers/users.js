@@ -58,7 +58,7 @@ exports.getUserWishlist = async (req, res) => {
   let { id } = req.params;
   try {
     const user = await User.findById(id);
-    const wishlist = await Property.find({
+    let query = Property.find({
       _id: {
         $in: user.wishlist,
       },
@@ -66,7 +66,20 @@ exports.getUserWishlist = async (req, res) => {
       .populate({ path: "cityId", select: "name" })
       .select("-gallery -amenities ");
 
-    res.status(200).json(wishlist);
+    const total = await Property.count({
+      _id: {
+        $in: user.wishlist,
+      },
+    });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    const wishlist = await query;
+
+    res.status(200).json({ wishlist: wishlist, total: total });
   } catch (error) {
     res.status(400).json({ message: error });
   }

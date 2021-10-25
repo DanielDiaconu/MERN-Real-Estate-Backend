@@ -40,11 +40,11 @@ exports.patchNotifications = async (req, res) => {
 exports.getUserNotifications = async (req, res) => {
   let { id } = req.params;
   try {
-    let query = Notification.find({ userId: id });
+    let query = Notification.find({ userId: id }).sort({ createdAt: -1 });
 
     const total = await Notification.countDocuments({ userId: id });
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 8;
     const skip = (page - 1) * limit;
 
     query = query.skip(skip).limit(limit);

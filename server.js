@@ -3,7 +3,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const http = require("http");
 const app = express();
-const PORT = 8080;
 const cors = require("cors");
 app.use(cors());
 const server = http.createServer(app);
@@ -263,7 +262,10 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, console.log(`We are live and listening on port ${PORT}`));
+server.listen(
+  process.env.PORT || 8080,
+  console.log(`We are live and listening on port ${8080}`)
+);
 mongoose.connect(
   process.env.DB_CONNECTION,
   console.log("Connected to Database !")

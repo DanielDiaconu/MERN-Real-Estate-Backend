@@ -54,7 +54,6 @@ exports.getHighlightedQuestion = async (req, res) => {
         path: "replies",
         populate: { path: "userId", select: ["fullName", "avatar"] },
       });
-    console.log(question);
     res.status(200).json(question);
   } catch (error) {
     res.status(400).json({ message: error.message });
