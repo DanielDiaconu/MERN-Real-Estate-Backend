@@ -11,7 +11,7 @@ const io = new Server(server, {
   cors: {
     origin: [
       "http://localhost:3000",
-      "https://mern-online-properties.netlify.app/",
+      "https://mern-online-properties.netlify.app",
     ],
   },
 });
