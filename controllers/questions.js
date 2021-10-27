@@ -48,7 +48,7 @@ exports.getQuestions = async (req, res) => {
 exports.getHighlightedQuestion = async (req, res) => {
   let { id } = req.params;
   try {
-    const question = await Question.find({ _id: id })
+    const question = await Question.findOne({ _id: id })
       .populate({ path: "userId", select: ["fullName", "avatar"] })
       .populate({
         path: "replies",
