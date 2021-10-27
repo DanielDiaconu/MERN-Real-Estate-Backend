@@ -76,6 +76,10 @@ exports.postQuestion = async (req, res) => {
       select: ["fullName", "avatar"],
     });
 
+    const total = await Question.countDocuments({
+      propertyId: body.propertyId,
+    });
+
     await Property.findByIdAndUpdate(body.propertyId, {
       $push: { questions: ObjectId(body.propertyId) },
     });
