@@ -4,7 +4,12 @@ exports.getProperties = async (req, res) => {
   try {
     const properties = await Property.find({
       pro: true,
-    }).limit(4);
+    })
+      .populate({
+        path: "ownerId",
+        select: ["fullName", "avatar"],
+      })
+      .limit(4);
     res.status(200).json(properties);
   } catch (error) {
     res.status(400).json({ message: error.message });
